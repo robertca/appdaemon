@@ -1,0 +1,13 @@
+traffic_analyze:
+  module: traffic_analyze
+  class: TrafficAnalyze
+  constrain_days: mon,tue,wed,thu,fri
+  context_keywords:
+    - Hill
+  keywords:
+    - crash
+    - traffic
+    - wind
+    - road
+  interval: 30
+  active_times: 10
