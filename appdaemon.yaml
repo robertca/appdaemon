@@ -1,0 +1,20 @@
+log:
+  errorfile: STDERR
+  logfile: STDOUT
+  #accessfile: /home/appdaemon/appdaemon/logs/access.log
+  #errorfile: /home/appdaemon/appdaemon/logs/error.log
+  #logfile: /home/appdaemon/appdaemon/logs/appdaemon.log
+appdaemon:
+  #api_key: !secret appdaemon_key
+  threads: '4'
+  app_dir: /home/appdaemon/appdaemon/apps
+  production_mode: false
+  plugins:
+    HASS:
+      type: hass
+      token: !secret appdaemon_token
+      ha_url: !secret appdaemon_plugins_hass_ha_url
+  hadashboard:
+    dash_url: !secret appdaemon_hadashboard
+    dashboard_dir: /home/appdaemon/appdaemon/dashboards
+
