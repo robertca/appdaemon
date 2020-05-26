@@ -97,13 +97,15 @@ class TrafficAnalyze(hass.Hass):
             self.fire_event("Traffic", message=status['text'], title="Traffic Problem")
 
     def processTwitterStatus(self, status):
+        status_text = status['text'].replace('#','').lower()
+        
         # Attempt to match keywords, but with a context keyword search first
         if len(self.context_keywords) > 0:
-            return ( any(keyword.lower() in status['text'].lower() for keyword in self.context_keywords) and 
-                    any(keyword.lower() in status['text'].lower() for keyword in self.keywords) )
+            return ( any(keyword.lower() in status_text for keyword in self.context_keywords) and 
+                    any(keyword.lower() in status_text for keyword in self.keywords) )
 
         # Attempt to match any keyword, without context
-        return any(keyword.lower() in status['text'].lower() for keyword in self.keywords)
+        return any(keyword.lower() in status_text for keyword in self.keywords)
 
     def updateTwitterTimeline(self):
         """Get the latest data from the source and update the state."""
@@ -115,11 +117,15 @@ class TrafficAnalyze(hass.Hass):
 
         try:
             self.timeline = []
+            oldest_tweet = datetime.utcnow() - timedelta(hours=6)
 
             # Iterate through the first N statuses in the home timeline
             for status in tweepy.Cursor(self.api.user_timeline, id=self.twitter_user, since_id=self.twitter_since_id, count=self.num_timeline_entries).items(self.num_timeline_entries):
                 self.twitter_since_id = max(self.twitter_since_id or 0, status.id)
                 if status.in_reply_to_status_id != None:
+                    continue
+                
+                if not self.time_in_range(oldest_tweet, datetime.now(), status.created_at):
                     continue
 
                 processed_status = {

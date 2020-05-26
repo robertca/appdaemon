@@ -8,6 +8,7 @@ traffic_analyze:
     - traffic
     - wind
     - road
+    - breakdown
   interval: 30
   notification_ranges: ['06:00', '09:00', '16:00', '18:00']
   twitter_key: !secret twitter_key
